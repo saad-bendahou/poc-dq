@@ -1,0 +1,585 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
+    margin-bottom: 6px;
+  }
+
+  .page-header {
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--color-background-secondary);
+  }
+  .page-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+  }
+  .page-subtitle {
+    font-size: 11px;
+    color: var(--color-text-tertiary);
+  }
+  .nav-pills {
+    display: flex;
+    gap: 4px;
+  }
+  .nav-pill {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 0.5px solid var(--color-border-tertiary);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+  }
+  .nav-pill.active {
+    background: var(--color-background-info);
+    color: var(--color-text-info);
+    border-color: var(--color-border-info);
+    font-weight: 500;
+  }
+
+  .filter-bar {
+    background: var(--color-background-secondary);
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    padding: 6px 14px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .filter-chip {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 0.5px solid var(--color-border-tertiary);
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+  }
+  .filter-chip .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .filter-chip .dot.blue { background: #378ADD; }
+  .filter-chip .dot.green { background: #639922; }
+  .filter-chip .dot.amber { background: #BA7517; }
+
+  .main-body {
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* Row 1 — KPI cards */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+  }
+  .kpi-card {
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-md);
+    padding: 8px 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-label {
+    font-size: 10px;
+    color: var(--color-text-tertiary);
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .kpi-value {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.1;
+  }
+  .kpi-value.blue { color: #378ADD; }
+  .kpi-value.green { color: #3B6D11; }
+  .kpi-value.red { color: #A32D2D; }
+  .kpi-value.amber { color: #854F0B; }
+  .kpi-value.purple { color: #534AB7; }
+  .kpi-delta {
+    font-size: 10px;
+    color: var(--color-text-tertiary);
+    margin-top: 2px;
+  }
+  .kpi-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 0 0 8px 8px;
+  }
+  .kpi-bar.blue { background: #378ADD; }
+  .kpi-bar.green { background: #639922; }
+  .kpi-bar.red { background: #E24B4A; }
+  .kpi-bar.amber { background: #BA7517; }
+  .kpi-bar.purple { background: #534AB7; }
+
+  /* Big gauge + trend row */
+  .row2 {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 8px;
+    height: 130px;
+  }
+
+  .gauge-card {
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    position: relative;
+  }
+  .gauge-score {
+    font-size: 30px;
+    font-weight: 500;
+    color: #378ADD;
+    line-height: 1;
+    margin-top: 4px;
+  }
+  .gauge-label {
+    font-size: 10px;
+    color: var(--color-text-tertiary);
+    margin-top: 2px;
+  }
+  .gauge-arc {
+    width: 70px;
+    height: 40px;
+    overflow: visible;
+    margin-bottom: 2px;
+  }
+
+  .trend-card {
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-md);
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+  }
+  .trend-title {
+    font-size: 10px;
+    color: var(--color-text-tertiary);
+    margin-bottom: 4px;
+  }
+  .trend-svg-wrap { flex: 1; }
+
+  /* Row 3 — heatmap + bar */
+  .row3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .chart-card {
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-md);
+    padding: 8px 10px;
+  }
+  .chart-title {
+    font-size: 10px;
+    color: var(--color-text-tertiary);
+    margin-bottom: 6px;
+  }
+
+  /* Heatmap grid */
+  .heatmap-grid {
+    display: grid;
+    grid-template-columns: 80px repeat(5, 1fr);
+    gap: 2px;
+    font-size: 9px;
+  }
+  .hm-header {
+    font-size: 8px;
+    color: var(--color-text-tertiary);
+    text-align: center;
+    padding: 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .hm-row-label {
+    font-size: 8px;
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 78px;
+  }
+  .hm-cell {
+    height: 18px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    font-weight: 500;
+    color: white;
+  }
+
+  /* Top anomalies */
+  .anom-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+    font-size: 9px;
+  }
+  .anom-name {
+    width: 90px;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 0;
+  }
+  .anom-bar-wrap {
+    flex: 1;
+    height: 12px;
+    background: var(--color-background-primary);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .anom-bar {
+    height: 100%;
+    border-radius: 3px;
+  }
+  .anom-pct {
+    width: 26px;
+    text-align: right;
+    color: var(--color-text-secondary);
+    flex-shrink: 0;
+    font-weight: 500;
+  }
+
+  /* Status legend */
+  .legend-row {
+    display: flex;
+    gap: 10px;
+    font-size: 9px;
+    color: var(--color-text-tertiary);
+    align-items: center;
+    margin-top: 2px;
+  }
+  .legend-dot {
+    width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 3px;
+  }
+
+  /* Annotation overlays */
+  .zone-label {
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    border: 1px dashed var(--color-border-secondary);
+    border-radius: 6px;
+    padding: 2px 6px;
+    display: inline-block;
+    margin-bottom: 4px;
+  }
+
+  /* Planning badges */
+  .plan-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 20px;
+    border: 0.5px solid var(--color-border-tertiary);
+    color: var(--color-text-secondary);
+    margin: 2px;
+    white-space: nowrap;
+  }
+  .plan-badge .num {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+    font-weight: 500;
+    background: var(--color-background-info);
+    color: var(--color-text-info);
+  }
+</style>
+
+<h2 class="sr-only">Planning de la Vue 1 — Executive Summary Data Quality Dashboard</h2>
+
+<div style="font-size:11px;font-weight:500;color:var(--color-text-tertiary);padding:8px 14px 4px;letter-spacing:0.06em;text-transform:uppercase;">
+  Vue 1 — Executive Summary · Blueprint & planning
+</div>
+
+<!-- Simulated Dashboard Frame -->
+<div style="border:1px solid var(--color-border-secondary);border-radius:10px;overflow:hidden;margin:0 2px 10px;">
+
+  <!-- Nav header -->
+  <div class="page-header">
+    <div>
+      <div class="page-title"><i class="ti ti-database" aria-hidden="true" style="font-size:13px;margin-right:5px"></i>Data Quality · Référentiel Tiers</div>
+      <div class="page-subtitle">PTP-TIE-POR · Complétude · Mise à jour : 23 juin 2026</div>
+    </div>
+    <div class="nav-pills">
+      <div class="nav-pill active">Executive Summary</div>
+      <div class="nav-pill">Détail Colonnes</div>
+      <div class="nav-pill">Tendances</div>
+      <div class="nav-pill">Anomalies</div>
+    </div>
+  </div>
+
+  <!-- Filter bar -->
+  <div class="filter-bar">
+    <span style="font-size:10px;color:var(--color-text-tertiary);font-weight:500;margin-right:2px;"><i class="ti ti-filter" aria-hidden="true" style="font-size:11px"></i> Filtres :</span>
+    <div class="filter-chip"><span class="dot blue"></span> Dataset : Tous</div>
+    <div class="filter-chip"><span class="dot amber"></span> Table : Toutes</div>
+    <div class="filter-chip"><span class="dot green"></span> Période : 3–23 juin 2026</div>
+    <div class="filter-chip"><span class="dot" style="background:#E24B4A"></span> Statut : Tous</div>
+    <div style="margin-left:auto;font-size:10px;color:var(--color-text-tertiary);cursor:pointer;"><i class="ti ti-refresh" aria-hidden="true"></i> Réinitialiser</div>
+  </div>
+
+  <!-- Body -->
+  <div class="main-body">
+
+    <!-- Zone A — KPI Cards -->
+    <div class="zone-label">Zone A · KPI Cards (Calculated Fields Tableau)</div>
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Score global</div>
+        <div class="kpi-value blue">85.9%</div>
+        <div class="kpi-delta">↑ +0.3% vs J-1</div>
+        <div class="kpi-bar blue"></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Colonnes contrôlées</div>
+        <div class="kpi-value purple">44</div>
+        <div class="kpi-delta">7 datasets · 5 tables</div>
+        <div class="kpi-bar purple"></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Règles PASS</div>
+        <div class="kpi-value green">437</div>
+        <div class="kpi-delta">76.3% du total</div>
+        <div class="kpi-bar green"></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Règles en ÉCHEC</div>
+        <div class="kpi-value red">98</div>
+        <div class="kpi-delta">17.1% · ⚠ Critique</div>
+        <div class="kpi-bar red"></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Alertes WARN</div>
+        <div class="kpi-value amber">38</div>
+        <div class="kpi-delta">6.6% · À surveiller</div>
+        <div class="kpi-bar amber"></div>
+      </div>
+    </div>
+
+    <!-- Zone B — Gauge + Trend -->
+    <div class="zone-label">Zone B · Score global (Gauge) + Tendance temporelle</div>
+    <div class="row2">
+      <div class="gauge-card">
+        <svg class="gauge-arc" viewBox="0 0 80 44">
+          <defs>
+            <linearGradient id="gaug" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#E24B4A"/>
+              <stop offset="50%" stop-color="#BA7517"/>
+              <stop offset="85%" stop-color="#639922"/>
+              <stop offset="100%" stop-color="#378ADD"/>
+            </linearGradient>
+          </defs>
+          <path d="M8 40 A32 32 0 0 1 72 40" fill="none" stroke="#e8e6e0" stroke-width="6" stroke-linecap="round"/>
+          <path d="M8 40 A32 32 0 0 1 64 18" fill="none" stroke="url(#gaug)" stroke-width="6" stroke-linecap="round"/>
+          <circle cx="64" cy="18" r="4" fill="#378ADD"/>
+          <line x1="40" y1="40" x2="63" y2="20" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="40" cy="40" r="3" fill="#378ADD"/>
+        </svg>
+        <div class="gauge-score">85.9%</div>
+        <div class="gauge-label">Score global Complétude</div>
+        <div style="display:flex;gap:6px;margin-top:6px;">
+          <span style="font-size:8px;padding:2px 5px;border-radius:10px;background:var(--color-background-success);color:var(--color-text-success)">PASS 76%</span>
+          <span style="font-size:8px;padding:2px 5px;border-radius:10px;background:var(--color-background-danger);color:var(--color-text-danger)">FAIL 17%</span>
+          <span style="font-size:8px;padding:2px 5px;border-radius:10px;background:var(--color-background-warning);color:var(--color-text-warning)">WARN 7%</span>
+        </div>
+      </div>
+
+      <div class="trend-card">
+        <div class="trend-title">Évolution du score moyen de Complétude — 3 au 23 juin 2026</div>
+        <div class="trend-svg-wrap">
+          <svg width="100%" height="90" viewBox="0 0 380 90">
+            <!-- Grid lines -->
+            <line x1="0" y1="20" x2="380" y2="20" stroke="var(--color-border-tertiary)" stroke-width="0.5"/>
+            <line x1="0" y1="50" x2="380" y2="50" stroke="var(--color-border-tertiary)" stroke-width="0.5"/>
+            <line x1="0" y1="80" x2="380" y2="80" stroke="var(--color-border-tertiary)" stroke-width="0.5"/>
+            <text x="0" y="18" font-size="7" fill="currentColor" opacity="0.4">100%</text>
+            <text x="0" y="48" font-size="7" fill="currentColor" opacity="0.4">85%</text>
+            <text x="0" y="78" font-size="7" fill="currentColor" opacity="0.4">70%</text>
+            <!-- PASS area fill -->
+            <path d="M25,48 L55,46 L85,47 L115,45 L145,44 L175,46 L205,44 L235,43 L265,45 L295,43 L325,42 L355,41 L355,80 L25,80Z" fill="#639922" opacity="0.1"/>
+            <!-- Main trend line -->
+            <polyline points="25,48 55,46 85,47 115,45 145,44 175,46 205,44 235,43 265,45 295,43 325,42 355,41"
+              fill="none" stroke="#378ADD" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+            <!-- Data points -->
+            <circle cx="25"  cy="48" r="2.5" fill="#378ADD"/>
+            <circle cx="85"  cy="47" r="2.5" fill="#378ADD"/>
+            <circle cx="145" cy="44" r="2.5" fill="#378ADD"/>
+            <circle cx="205" cy="44" r="2.5" fill="#378ADD"/>
+            <circle cx="265" cy="45" r="2.5" fill="#378ADD"/>
+            <circle cx="325" cy="42" r="2.5" fill="#378ADD"/>
+            <circle cx="355" cy="41" r="3.5" fill="#378ADD" stroke="white" stroke-width="1.5"/>
+            <!-- Trend direction label -->
+            <text x="355" y="35" font-size="8" fill="#378ADD" text-anchor="end" font-weight="500">↑ +0.3%</text>
+            <!-- Axis dates -->
+            <text x="25"  y="88" font-size="7" fill="currentColor" opacity="0.4" text-anchor="middle">03/06</text>
+            <text x="115" y="88" font-size="7" fill="currentColor" opacity="0.4" text-anchor="middle">08/06</text>
+            <text x="205" y="88" font-size="7" fill="currentColor" opacity="0.4" text-anchor="middle">12/06</text>
+            <text x="295" y="88" font-size="7" fill="currentColor" opacity="0.4" text-anchor="middle">19/06</text>
+            <text x="355" y="88" font-size="7" fill="currentColor" opacity="0.4" text-anchor="middle">23/06</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zone C — Heatmap + Top Anomalies -->
+    <div class="zone-label">Zone C · Heatmap Qualité par Table + Top Anomalies</div>
+    <div class="row3">
+
+      <!-- Heatmap -->
+      <div class="chart-card">
+        <div class="chart-title">Heatmap — Score moyen par table (colonnes = dates clés)</div>
+        <div class="heatmap-grid">
+          <div class="hm-header"></div>
+          <div class="hm-header">03/06</div>
+          <div class="hm-header">08/06</div>
+          <div class="hm-header">15/06</div>
+          <div class="hm-header">22/06</div>
+          <div class="hm-header">23/06</div>
+
+          <div class="hm-row-label">clients PP</div>
+          <div class="hm-cell" style="background:#639922">87</div>
+          <div class="hm-cell" style="background:#639922">87</div>
+          <div class="hm-cell" style="background:#639922">87</div>
+          <div class="hm-cell" style="background:#3B6D11">88</div>
+          <div class="hm-cell" style="background:#3B6D11">88</div>
+
+          <div class="hm-row-label">clients PM</div>
+          <div class="hm-cell" style="background:#639922">83</div>
+          <div class="hm-cell" style="background:#639922">83</div>
+          <div class="hm-cell" style="background:#639922">83</div>
+          <div class="hm-cell" style="background:#639922">83</div>
+          <div class="hm-cell" style="background:#639922">83</div>
+
+          <div class="hm-row-label">adresses</div>
+          <div class="hm-cell" style="background:#3B6D11">96</div>
+          <div class="hm-cell" style="background:#3B6D11">96</div>
+          <div class="hm-cell" style="background:#3B6D11">96</div>
+          <div class="hm-cell" style="background:#3B6D11">96</div>
+          <div class="hm-cell" style="background:#3B6D11">96</div>
+
+          <div class="hm-row-label">associes</div>
+          <div class="hm-cell" style="background:#E24B4A">37</div>
+          <div class="hm-cell" style="background:#E24B4A">37</div>
+          <div class="hm-cell" style="background:#E24B4A">38</div>
+          <div class="hm-cell" style="background:#E24B4A">38</div>
+          <div class="hm-cell" style="background:#E24B4A">38</div>
+
+          <div class="hm-row-label">professionnels</div>
+          <div class="hm-cell" style="background:#BA7517">67</div>
+          <div class="hm-cell" style="background:#BA7517">68</div>
+          <div class="hm-cell" style="background:#BA7517">68</div>
+          <div class="hm-cell" style="background:#BA7517">68</div>
+          <div class="hm-cell" style="background:#BA7517">69</div>
+        </div>
+        <div class="legend-row" style="margin-top:6px;">
+          <span><span class="legend-dot" style="background:#E24B4A"></span>< 60%</span>
+          <span><span class="legend-dot" style="background:#BA7517"></span>60–79%</span>
+          <span><span class="legend-dot" style="background:#639922"></span>80–94%</span>
+          <span><span class="legend-dot" style="background:#3B6D11"></span>≥ 95%</span>
+        </div>
+      </div>
+
+      <!-- Top Anomalies -->
+      <div class="chart-card">
+        <div class="chart-title">Top anomalies — Colonnes avec score le plus bas (FAIL)</div>
+        <div style="margin-top:2px;">
+          <div class="anom-row">
+            <div class="anom-name">date_naissance</div>
+            <div class="anom-bar-wrap"><div class="anom-bar" style="width:1%;background:#E24B4A"></div></div>
+            <div class="anom-pct" style="color:#A32D2D">0.0%</div>
+          </div>
+          <div class="anom-row">
+            <div class="anom-name">capital</div>
+            <div class="anom-bar-wrap"><div class="anom-bar" style="width:1%;background:#E24B4A"></div></div>
+            <div class="anom-pct" style="color:#A32D2D">0.0%</div>
+          </div>
+          <div class="anom-row">
+            <div class="anom-name">identifiant_fatca</div>
+            <div class="anom-bar-wrap"><div class="anom-bar" style="width:1%;background:#E24B4A"></div></div>
+            <div class="anom-pct" style="color:#A32D2D">0.05%</div>
+          </div>
+          <div class="anom-row">
+            <div class="anom-name">employeur</div>
+            <div class="anom-bar-wrap"><div class="anom-bar" style="width:28%;background:#D85A30"></div></div>
+            <div class="anom-pct" style="color:#993C1D">27.7%</div>
+          </div>
+          <div class="anom-row">
+            <div class="anom-name">code_categorie_soc.</div>
+            <div class="anom-bar-wrap"><div class="anom-bar" style="width:46%;background:#BA7517"></div></div>
+            <div class="anom-pct" style="color:#854F0B">45.9%</div>
+          </div>
+          <div class="anom-row">
+            <div class="anom-name">chiffre_affaire</div>
+            <div class="anom-bar-wrap"><div class="anom-bar" style="width:71%;background:#BA7517"></div></div>
+            <div class="anom-pct" style="color:#854F0B">71.5%</div>
+          </div>
+          <div class="anom-row">
+            <div class="anom-name">ville_de_naissance</div>
+            <div class="anom-bar-wrap"><div class="anom-bar" style="width:87%;background:#639922"></div></div>
+            <div class="anom-pct" style="color:#3B6D11">86.6%</div>
+          </div>
+          <div class="anom-row">
+            <div class="anom-name">code_postal</div>
+            <div class="anom-bar-wrap"><div class="anom-bar" style="width:85%;background:#639922"></div></div>
+            <div class="anom-pct" style="color:#3B6D11">85.2%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zone tags -->
+    <div style="border-top:0.5px solid var(--color-border-tertiary);padding-top:8px;margin-top:2px;">
+      <div style="font-size:10px;font-weight:500;color:var(--color-text-secondary);margin-bottom:5px;">
+        <i class="ti ti-tool" aria-hidden="true" style="font-size:11px"></i> Composants Tableau à construire dans cette vue :
+      </div>
+      <div>
+        <span class="plan-badge"><span class="num">1</span>5 KPI Cards (BANs)</span>
+        <span class="plan-badge"><span class="num">2</span>Gauge Chart (Score global)</span>
+        <span class="plan-badge"><span class="num">3</span>Line Chart (Tendance)</span>
+        <span class="plan-badge"><span class="num">4</span>Heatmap (Table × Date)</span>
+        <span class="plan-badge"><span class="num">5</span>Bar Chart horizontal (Top anomalies)</span>
+        <span class="plan-badge"><span class="num">6</span>Filtres (Dataset · Table · Période · Statut)</span>
+        <span class="plan-badge"><span class="num">7</span>Navigation (4 sheets)</span>
+        <span class="plan-badge"><span class="num">8</span>Alertes couleur RAG</span>
+      </div>
+    </div>
+
+  </div>
+</div>

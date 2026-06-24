@@ -1,0 +1,43 @@
+
+Ce que j'ai découvert dans votre dataset :
+
+573 contrôles au total sur 13 jours (3 au 23 juin 2026)
+Une seule règle active : Complétude (avec un doublon d'encodage Completude / Complétude à corriger)
+Un seul domaine : PTP-TIE-POR (Tiers/Portefeuille)
+7 datasets couvrant 5 tables : clients, adresses, associes, gerants, relations_professional
+Score moyen global : 85.91%
+PASS : 76.3% · WARN : 6.6% · FAIL : 17.1%
+Pires colonnes : date_naissance (0%), identifiant_fatca (0%), capital (0%), employeur (27.69%)
+
+
+Voici maintenant le planning complet de la Vue 1 — la vue Executive Summary, celle que verra le CDO en premier.
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 0.25s;
+    animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+  }
+VvisualizeVvisualize show_widget
+Planning détaillé — Vue 1 : Executive Summary
+Structure de la vue (8 zones)
+Zone A — KPI Cards (5 cartes)
+
+Ce sont les "Big Numbers" que le CDO lit en 3 secondes : Score global, colonnes contrôlées, règles PASS, FAIL, WARN. Dans Tableau, ce sont des BAN sheets (Big Ass Numbers) avec des Calculated Fields.
+Zone B — Score Gauge + Tendance temporelle
+
+La jauge visuelle du score global (86%) et la courbe d'évolution sur 13 jours. Permet de voir immédiatement si la qualité progresse ou se dégrade.
+Zone C — Heatmap + Top Anomalies
+
+La heatmap Table × Date révèle les zones problématiques (associes en rouge critique à 37%). Le bar chart horizontal classe les colonnes les plus défaillantes.
+
+Actions préparatoires AVANT d'ouvrir Tableau
+Avant de construire quoi que ce soit, vous devez corriger un problème dans vos données :
+
+Problème détecté : La colonne rule contient deux variantes : Completude (399 lignes) et Complétude avec accent (174 lignes). Tableau les traitera comme deux règles distinctes, ce qui faussera tous vos calculs.
+
+Correction à faire dans Excel / votre source :
+
+Faites un rechercher-remplacer : Complétude → Completude (supprimer l'accent). Uniformisez avant de connecter à Tableau.
+
+Score de maturité actuel
+CritèreScoreRichesse des données5/10 (1 règle, 1 domaine)Potentiel visuel8/10 (structure parfaite)Qualité des données6/10 (à améliorer avant connexion)Maturité globale estimée6/10
